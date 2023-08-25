@@ -1,13 +1,23 @@
 import React from "react";
+import UpcomingMovies from "./components/upcomingMovies";
+
 import { Container, Section, Card } from "@/components";
-import { getTrendingMovies, getPopularMovies } from "@/http/movies";
+import {
+  getTrendingMovies,
+  getPopularMovies,
+  getUpcomingMovies,
+  getMovieGenre
+} from "@/http/movies";
 import Styles from "@/styles/main.module.css";
 
 export default async function page() {
-  const [trendingMovies, popularMovies] = await Promise.all([
-    getTrendingMovies(),
-    getPopularMovies()
-  ]);
+  const [trendingMovies, popularMovies, upcomingMovies, movieGenre] =
+    await Promise.all([
+      getTrendingMovies(),
+      getPopularMovies(),
+      getUpcomingMovies(),
+      getMovieGenre()
+    ]);
 
   return (
     <Container>
@@ -33,11 +43,10 @@ export default async function page() {
         </div>
       </div>
 
-      <Section title="">
-        <div className="w-full p-8 bg-indigo-900">
-          <p className="text-2xl text-white font-medium mb-5">Upcoming movies</p>
-        </div>
-      </Section>
+      <UpcomingMovies
+        _upcomingMovies={upcomingMovies}
+        _movieGenre={movieGenre}
+      />
 
       <Section title="Trending">
         <div
@@ -51,6 +60,7 @@ export default async function page() {
               lang={movie.original_language}
               imgSrc={movie.poster_path}
               releaseDate={movie.release_date}
+              alt={movie.title}
             />
           ))}
         </div>
@@ -68,6 +78,7 @@ export default async function page() {
               lang={movie.original_language}
               imgSrc={movie.poster_path}
               releaseDate={movie.release_date}
+              alt={movie.title}
             />
           ))}
         </div>
