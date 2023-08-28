@@ -1,5 +1,5 @@
 const { TOKEN } = process.env;
-import { Genre, Movie } from "@/types";
+import { Genre, Movie, MovieDetail } from "@/types";
 
 interface MovieResponse {
   page: number;
@@ -71,6 +71,16 @@ export async function getMovieGenre() {
     const data: GenreResponse = await response.json();
     const mappedGenre = data.genres.map((e) => [e.id, e.name]);
     return Object.fromEntries(mappedGenre);
+  } catch (error: any) {
+    throw new Error(error.message as string);
+  }
+}
+
+export async function getDetailMovie(id: number) {
+  try {
+    const response = await fetch(`${BASE_URL}/movie/${id}`, CONFIG("GET"));
+    const data: MovieDetail = await response.json();
+    return data;
   } catch (error: any) {
     throw new Error(error.message as string);
   }

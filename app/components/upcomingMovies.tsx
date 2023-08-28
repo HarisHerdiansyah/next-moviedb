@@ -11,7 +11,6 @@ type IProps = {
 };
 
 export default function Component({ _movieGenre, _upcomingMovies }: IProps) {
-  // const [upcomingMovies, setUpcomingMovies] = useState<Movie[]>([]);
   const [currentMovie, setCurrentMovie] = useState<number>(0);
 
   const setPrevMovie = useCallback(() => {
@@ -45,7 +44,9 @@ export default function Component({ _movieGenre, _upcomingMovies }: IProps) {
             <Card
               id={movie.id}
               imgSrc={movie.poster_path}
-              alt={movie.title}
+              title={movie.title}
+              isList={false}
+              menu="movie"
               className="flex-shrink-0 w-1/4"
             />
             <div className="max-w-[768px]">
@@ -58,11 +59,8 @@ export default function Component({ _movieGenre, _upcomingMovies }: IProps) {
               <p className="text-lg text-white inline mr-10">
                 Language : {movie.original_language.toUpperCase()}
               </p>
-              <p className="text-lg text-white inline">
-                Total Vote : {movie.vote_count}
-              </p>
-              <p className="text-lg text-white">Genre : {genre}</p>
-              <button className="bg-cyan-200 my-5 px-6 py-3 rounded-full border-2 border-black font-semibold hover:bg-cyan-400">
+              <p className="text-lg text-white inline">Genre : {genre}</p>
+              <button className="bg-cyan-200 my-5 px-6 py-3 rounded-full border-2 border-black font-semibold hover:bg-cyan-400 block">
                 Watch Now
               </button>
             </div>

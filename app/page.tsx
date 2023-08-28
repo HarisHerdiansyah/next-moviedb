@@ -1,5 +1,6 @@
 import React from "react";
 import UpcomingMovies from "./components/upcomingMovies";
+import TopRatedTvShows from "./components/topRatedTvShows";
 
 import { Container, Section, Card } from "@/components";
 import {
@@ -8,16 +9,31 @@ import {
   getUpcomingMovies,
   getMovieGenre
 } from "@/http/movies";
+import {
+  getOnAirTVShows,
+  getTopRatedTVShows,
+  getTVShowsGenre
+} from "@/http/tv";
 import Styles from "@/styles/main.module.css";
 
 export default async function page() {
-  const [trendingMovies, popularMovies, upcomingMovies, movieGenre] =
-    await Promise.all([
-      getTrendingMovies(),
-      getPopularMovies(),
-      getUpcomingMovies(),
-      getMovieGenre()
-    ]);
+  const [
+    trendingMovies,
+    popularMovies,
+    upcomingMovies,
+    movieGenre,
+    onAirTVShows,
+    topRatedTvShows,
+    tvShowsGenre
+  ] = await Promise.all([
+    getTrendingMovies(),
+    getPopularMovies(),
+    getUpcomingMovies(),
+    getMovieGenre(),
+    getOnAirTVShows(),
+    getTopRatedTVShows(),
+    getTVShowsGenre()
+  ]);
 
   return (
     <Container>
@@ -42,43 +58,67 @@ export default async function page() {
           </div>
         </div>
       </div>
-
       <UpcomingMovies
         _upcomingMovies={upcomingMovies}
         _movieGenre={movieGenre}
       />
-
-      <Section title="Trending">
+      <Section title="Movies : Trending">
         <div
           className={`${Styles.customScroll} flex justify-start items-start gap-10 overflow-x-scroll pt-8 pb-5`}
         >
           {trendingMovies.map((movie) => (
             <Card
+              menu="movie"
               key={movie.id}
               id={movie.id}
               title={movie.title}
               lang={movie.original_language}
               imgSrc={movie.poster_path}
               releaseDate={movie.release_date}
-              alt={movie.title}
+              rating={movie.vote_average}
+              isList
             />
           ))}
         </div>
       </Section>
-
-      <Section title="Popular on this week">
+      <Section title="Movies : Popular on this week">
         <div
           className={`${Styles.customScroll} flex justify-start items-start gap-10 overflow-x-scroll pt-8 pb-5`}
         >
           {popularMovies.map((movie) => (
             <Card
+              menu="movie"
               key={movie.id}
               id={movie.id}
               title={movie.title}
               lang={movie.original_language}
               imgSrc={movie.poster_path}
               releaseDate={movie.release_date}
-              alt={movie.title}
+              rating={movie.vote_average}
+              isList
+            />
+          ))}
+        </div>
+      </Section>
+
+      <TopRatedTvShows
+        _topRatedTvShows={topRatedTvShows}
+        _genre={tvShowsGenre}
+      />
+      <Section title="TV Shows : On the air">
+        <div
+          className={`${Styles.customScroll} flex justify-start items-start gap-10 overflow-x-scroll pt-8 pb-5`}
+        >
+          {onAirTVShows.map((show) => (
+            <Card
+              menu="tv"
+              key={show.id}
+              id={show.id}
+              title={show.name}
+              lang={show.original_language}
+              imgSrc={show.poster_path}
+              rating={show.vote_average}
+              isList
             />
           ))}
         </div>
