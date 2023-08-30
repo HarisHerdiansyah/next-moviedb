@@ -37,7 +37,7 @@ export default function Navbar() {
                   router.push(
                     `/${menu.toLowerCase()}/${e
                       .toLowerCase()
-                      .replace(" ", "-")}`
+                      .replaceAll(" ", "-")}`
                   )
                 }
               >
@@ -55,7 +55,7 @@ export default function Navbar() {
     <nav className="bg-indigo-950 py-4 px-32 flex justify-between items-center">
       <div className="flex items-center gap-12">
         <p
-          className="text-2xl text-white font-medium tracking-wide"
+          className="text-2xl text-white font-medium tracking-wide cursor-pointer"
           onClick={() => router.replace("/")}
         >
           MovieDB

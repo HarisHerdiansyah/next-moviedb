@@ -45,6 +45,7 @@ export default function Component({ _movieGenre, _upcomingMovies }: IProps) {
               id={movie.id}
               imgSrc={movie.poster_path}
               title={movie.title}
+              rating={movie.vote_average}
               isList={false}
               menu="movie"
               className="flex-shrink-0 w-1/4"

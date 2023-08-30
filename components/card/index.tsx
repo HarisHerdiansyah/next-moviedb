@@ -11,9 +11,9 @@ type IProps = {
   lang?: string;
   imgSrc: string;
   releaseDate?: string;
-  id?: number | string;
+  id: number | string;
   className?: string;
-  rating?: number;
+  rating: number;
   isList: boolean;
   menu?: string;
 };
@@ -38,13 +38,9 @@ export default function Card({
       className={`flex flex-col cursor-pointer flex-shrink-0 w-[171px] justify-between overflow-hidden ${className}`}
       onClick={() => router.push(`/${menu}/detail/${id}`)}
     >
-      <Image
-        src={imageSource}
-        alt={title}
-        width={171}
-        height={304}
-        className="rounded-md"
-      />
+      <div className="w-[171px] h-[260px] overflow-hidden rounded-sm">
+        <Image src={imageSource} alt={title} width={171} height={260} />
+      </div>
       <div className="mt-3">
         {isList && (
           <div className="mb-1 flex items-center gap-1">

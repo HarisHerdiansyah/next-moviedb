@@ -81,23 +81,23 @@ export default async function page({ params: { id } }: IProps) {
               <article className="text-justify flex flex-col gap-2">
                 <p>
                   <span className="font-semibold">Title</span> :{" "}
-                  {detailTVShows.last_episode_to_air.name ?? "-"}
+                  {detailTVShows.last_episode_to_air?.name ?? "-"}
                 </p>
                 <p>
                   <span className="font-semibold">Episode Number</span> :{" "}
-                  {detailTVShows.last_episode_to_air.episode_number ?? "-"}
+                  {detailTVShows.last_episode_to_air?.episode_number ?? "-"}
                 </p>
                 <p>
                   <span className="font-semibold">Season Number</span> :{" "}
-                  {detailTVShows.last_episode_to_air.season_number ?? "-"}
+                  {detailTVShows.last_episode_to_air?.season_number ?? "-"}
                 </p>
                 <p>
                   <span className="font-semibold">Overview</span> :{" "}
-                  {detailTVShows.last_episode_to_air.overview ?? "-"}
+                  {detailTVShows.last_episode_to_air?.overview ?? "-"}
                 </p>
                 <p>
                   <span className="font-semibold">Air Date</span> :{" "}
-                  {detailTVShows.last_episode_to_air.air_date ?? "-"}
+                  {detailTVShows.last_episode_to_air?.air_date ?? "-"}
                 </p>
               </article>
             </section>
@@ -108,23 +108,23 @@ export default async function page({ params: { id } }: IProps) {
               <article className="text-justify flex flex-col gap-2">
                 <p>
                   <span className="font-semibold">Title</span> :{" "}
-                  {detailTVShows.next_episode_to_air.name ?? "-"}
+                  {detailTVShows.next_episode_to_air?.name ?? "-"}
                 </p>
                 <p>
                   <span className="font-semibold">Episode Number</span> :{" "}
-                  {detailTVShows.next_episode_to_air.episode_number ?? "-"}
+                  {detailTVShows.next_episode_to_air?.episode_number ?? "-"}
                 </p>
                 <p>
                   <span className="font-semibold">Season Number</span> :{" "}
-                  {detailTVShows.next_episode_to_air.season_number ?? "-"}
+                  {detailTVShows.next_episode_to_air?.season_number ?? "-"}
                 </p>
                 <p>
                   <span className="font-semibold">Overview</span> :{" "}
-                  {detailTVShows.next_episode_to_air.overview ?? "-"}
+                  {detailTVShows.next_episode_to_air?.overview ?? "-"}
                 </p>
                 <p>
                   <span className="font-semibold">Air Date</span> :{" "}
-                  {detailTVShows.next_episode_to_air.air_date ?? "-"}
+                  {detailTVShows.next_episode_to_air?.air_date ?? "-"}
                 </p>
               </article>
             </section>
@@ -173,6 +173,7 @@ export default async function page({ params: { id } }: IProps) {
                     imgSrc={`https://image.tmdb.org/t/p/original${e.poster_path}`}
                     title={e.name}
                     key={e.id}
+                    id={e.id}
                     rating={e.vote_average}
                     isList
                   />

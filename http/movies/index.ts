@@ -1,9 +1,15 @@
-const { TOKEN } = process.env;
-import { Genre, Movie, MovieDetail } from "@/types";
+import { Genre, Movie, MovieDetail, MultiSearchResult } from "@/types";
 
 interface MovieResponse {
   page: number;
   results: Movie[];
+  total_pages: number;
+  total_results: number;
+}
+
+interface SearchResponse {
+  page: number;
+  results: MultiSearchResult[];
   total_pages: number;
   total_results: number;
 }
@@ -16,12 +22,14 @@ type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
 
 const BASE_URL = "https://api.themoviedb.org/3";
 
-const CONFIG = (method: HttpMethod) => {
+const CONFIG = (method: HttpMethod, inClient: boolean = false) => {
   return {
     method,
     headers: {
       accept: "application/json",
-      Authorization: `Bearer ${TOKEN}`
+      Authorization: `Bearer ${
+        inClient ? process.env.NEXT_PUBLIC_TOKEN : process.env.TOKEN
+      }`
     }
   };
 };
@@ -39,27 +47,19 @@ export async function getTrendingMovies() {
   }
 }
 
-export async function getPopularMovies() {
+// i add inClient params also even CONFIG has inClient param and has default value, because this function is called in both server and client
+export async function getListsMovie(
+  slug: string,
+  page: number = 1,
+  inClient: boolean = false
+) {
   try {
     const response = await fetch(
-      `${BASE_URL}/movie/popular?language=en-US&page=1`,
-      CONFIG("GET")
+      `${BASE_URL}/movie/${slug}language=en-US&page=${page}`,
+      CONFIG("GET", inClient)
     );
     const data: MovieResponse = await response.json();
-    return data.results;
-  } catch (error: any) {
-    throw new Error(error.message as string);
-  }
-}
-
-export async function getUpcomingMovies() {
-  try {
-    const response = await fetch(
-      `${BASE_URL}/movie/upcoming?language=en-US&page=1`,
-      CONFIG("GET")
-    );
-    const data: MovieResponse = await response.json();
-    return data.results;
+    return data;
   } catch (error: any) {
     throw new Error(error.message as string);
   }
@@ -81,6 +81,24 @@ export async function getDetailMovie(id: number) {
     const response = await fetch(`${BASE_URL}/movie/${id}`, CONFIG("GET"));
     const data: MovieDetail = await response.json();
     return data;
+  } catch (error: any) {
+    throw new Error(error.message as string);
+  }
+}
+
+export async function searchMovieAndShows(keyword: string, page: number = 1) {
+  try {
+    const response = await fetch(
+      `${BASE_URL}/search/multi?query=${keyword}&include_adult=false&language=en-US&page=${page}`,
+      CONFIG("GET", true)
+    );
+    const data: SearchResponse = await response.json();
+
+    // response is included person also, in this case we just want to get movie and tv shows only
+    const movieAndShows = data.results.filter(
+      (data) => data.media_type !== "person"
+    );
+    return { ...data, results: movieAndShows };
   } catch (error: any) {
     throw new Error(error.message as string);
   }

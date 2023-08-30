@@ -79,7 +79,7 @@ export default function Component({ _genre, _topRatedTvShows }: IProps) {
   }, [_topRatedTvShows, _genre, currentShows, setNextShows, setPrevShows]);
 
   const RenderMain = useMemo(() => {
-    return <Section title="Upcoming movies">{showsCarousel}</Section>;
+    return <Section title="Top Rated TV Shows">{showsCarousel}</Section>;
   }, [showsCarousel]);
 
   return RenderMain;

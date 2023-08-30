@@ -162,3 +162,5 @@ export interface TVShowDetail {
   vote_average: number;
   vote_count: number;
 }
+
+export interface MultiSearchResult extends Movie, TVShow {}

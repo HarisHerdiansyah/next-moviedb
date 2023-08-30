@@ -1,19 +1,12 @@
 import React from "react";
 import UpcomingMovies from "./components/upcomingMovies";
 import TopRatedTvShows from "./components/topRatedTvShows";
+import SearchBox from "./components/searchBox";
 
 import { Container, Section, Card } from "@/components";
-import {
-  getTrendingMovies,
-  getPopularMovies,
-  getUpcomingMovies,
-  getMovieGenre
-} from "@/http/movies";
-import {
-  getOnAirTVShows,
-  getTopRatedTVShows,
-  getTVShowsGenre
-} from "@/http/tv";
+import { getTrendingMovies, getListsMovie, getMovieGenre } from "@/http/movies";
+import { movieEndpoint, tvShowsEndpoint } from "@/utils";
+import { getListsTVShows, getTVShowsGenre } from "@/http/tv";
 import Styles from "@/styles/main.module.css";
 
 export default async function page() {
@@ -27,39 +20,19 @@ export default async function page() {
     tvShowsGenre
   ] = await Promise.all([
     getTrendingMovies(),
-    getPopularMovies(),
-    getUpcomingMovies(),
+    getListsMovie(movieEndpoint.popular),
+    getListsMovie(movieEndpoint.upcoming),
     getMovieGenre(),
-    getOnAirTVShows(),
-    getTopRatedTVShows(),
+    getListsTVShows(tvShowsEndpoint["on-the-air"]),
+    getListsTVShows(tvShowsEndpoint["top-rated"]),
     getTVShowsGenre()
   ]);
 
   return (
     <Container>
-      <div className="w-full bg-gradient-to-tr from-indigo-800 to-indigo-600 p-8 rounded">
-        <p className="text-white text-4xl font-bold mb-5">Welcome!</p>
-        <p className="text-white text-xl font-medium">
-          Millon movies and TV shows only for you. Explore now!
-        </p>
-        <div className="mt-10 flex justify-center">
-          <div className="max-w-3xl flex-1">
-            <input
-              type="text"
-              name="search"
-              id="serach"
-              placeholder="Search here"
-              className="w-3/4 shadow appearance-none border rounded py-2 px-3 text-black leading-tight focus:outline-none focus:shadow-outline"
-              autoComplete="off"
-            />
-            <button className="w-1/4 py-2 px-3 bg-indigo-950 text-white font-semibold rounded outline-none">
-              Search
-            </button>
-          </div>
-        </div>
-      </div>
+      <SearchBox />
       <UpcomingMovies
-        _upcomingMovies={upcomingMovies}
+        _upcomingMovies={upcomingMovies.results}
         _movieGenre={movieGenre}
       />
       <Section title="Movies : Trending">
@@ -85,7 +58,7 @@ export default async function page() {
         <div
           className={`${Styles.customScroll} flex justify-start items-start gap-10 overflow-x-scroll pt-8 pb-5`}
         >
-          {popularMovies.map((movie) => (
+          {popularMovies.results.map((movie) => (
             <Card
               menu="movie"
               key={movie.id}
@@ -102,14 +75,14 @@ export default async function page() {
       </Section>
 
       <TopRatedTvShows
-        _topRatedTvShows={topRatedTvShows}
+        _topRatedTvShows={topRatedTvShows.results}
         _genre={tvShowsGenre}
       />
       <Section title="TV Shows : On the air">
         <div
           className={`${Styles.customScroll} flex justify-start items-start gap-10 overflow-x-scroll pt-8 pb-5`}
         >
-          {onAirTVShows.map((show) => (
+          {onAirTVShows.results.map((show) => (
             <Card
               menu="tv"
               key={show.id}
