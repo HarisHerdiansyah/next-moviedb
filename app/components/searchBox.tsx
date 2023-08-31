@@ -1,14 +1,18 @@
 "use client";
 
 import React, { useState } from "react";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 
 export default function SearchBox() {
+  const { data: session } = useSession();
   const [searchVal, setSearchVal] = useState<string>("");
 
   return (
     <div className="w-full bg-gradient-to-tr from-indigo-800 to-indigo-600 p-8 rounded">
-      <p className="text-white text-4xl font-bold mb-5">Welcome!</p>
+      <p className="text-white text-4xl font-bold mb-5">
+        Welcome{session ? `, ${session?.user?.name}!` : "!"}
+      </p>
       <p className="text-white text-xl font-medium">
         Millon movies and TV shows only for you. Explore now!
       </p>
@@ -27,7 +31,7 @@ export default function SearchBox() {
           <Link
             className="w-1/4 py-3 px-4 bg-indigo-950 text-white font-semibold rounded outline-none"
             href={{
-              pathname: "/search",
+              pathname: session ? "/search" : "/api/auth/signin",
               query: { keyword: searchVal }
             }}
           >
