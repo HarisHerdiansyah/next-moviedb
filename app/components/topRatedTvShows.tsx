@@ -47,6 +47,7 @@ export default function Component({ _genre, _topRatedTvShows }: IProps) {
               title={shows.name}
               className="flex-shrink-0 w-1/4"
               isList={false}
+              menu="tv"
             />
             <div className="max-w-[768px]">
               <p className="text-4xl line-clamp-1 text-slate-50 font-semibold my-5">

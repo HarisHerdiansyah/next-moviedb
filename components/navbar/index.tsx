@@ -3,6 +3,8 @@
 import React, { useState, useCallback } from "react";
 import { IoCaretDownOutline } from "react-icons/io5";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useSession, signOut } from "next-auth/react";
 import { DROPDOWN, DropdownMenu } from "@/utils";
 
 type IState = {
@@ -11,6 +13,7 @@ type IState = {
 
 export default function Navbar() {
   const router = useRouter();
+  const { data: session } = useSession();
 
   const [isDropdownOpen, setIsDropdownOpen] = useState<IState>({
     movie: false,
@@ -33,13 +36,16 @@ export default function Navbar() {
               <p
                 className="text-gray-700 px-4 py-2 text-sm hover:font-semibold"
                 key={e}
-                onClick={() =>
-                  router.push(
+                onClick={() => {
+                  if (!session) {
+                    return router.push("/api/auth/signin");
+                  }
+                  return router.push(
                     `/${menu.toLowerCase()}/${e
                       .toLowerCase()
                       .replaceAll(" ", "-")}`
-                  )
-                }
+                  );
+                }}
               >
                 {e}
               </p>
@@ -48,7 +54,7 @@ export default function Navbar() {
         </div>
       );
     },
-    [router]
+    [router, session]
   );
 
   return (
@@ -79,7 +85,21 @@ export default function Navbar() {
           </div>
         </div>
       </div>
-      <div className="w-9 h-9 rounded-full bg-white"></div>
+      {session ? (
+        <button
+          className="bg-white font-semibold px-4 py-2 rounded"
+          onClick={() => signOut({ callbackUrl: "http://localhost:3000/" })}
+        >
+          Sign Out
+        </button>
+      ) : (
+        <Link
+          className="bg-white font-semibold px-4 py-2 rounded"
+          href="/api/auth/signin"
+        >
+          Sign In
+        </Link>
+      )}
     </nav>
   );
 }

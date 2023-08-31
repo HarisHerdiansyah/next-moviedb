@@ -5,6 +5,7 @@ import Image from "next/image";
 import moment from "moment";
 import { FaStar } from "react-icons/fa";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 type IProps = {
   title: string;
@@ -13,7 +14,7 @@ type IProps = {
   releaseDate?: string;
   id: number | string;
   className?: string;
-  rating: number;
+  rating?: number;
   isList: boolean;
   menu?: string;
 };
@@ -32,11 +33,17 @@ export default function Card({
     ? `https://image.tmdb.org/t/p/original${imgSrc}`
     : "/image/default.png";
   const router = useRouter();
+  const { data: session } = useSession();
 
   return (
     <div
       className={`flex flex-col cursor-pointer flex-shrink-0 w-[171px] justify-between overflow-hidden ${className}`}
-      onClick={() => router.push(`/${menu}/detail/${id}`)}
+      onClick={() => {
+        if (!session) {
+          return router.push("/api/auth/signin");
+        }
+        return router.push(`/${menu}/detail/${id}`);
+      }}
     >
       <div className="w-[171px] h-[260px] overflow-hidden rounded-sm">
         <Image src={imageSource} alt={title} width={171} height={260} />
