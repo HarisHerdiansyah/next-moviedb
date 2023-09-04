@@ -4,7 +4,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import ReactPaginate from "react-paginate";
 import { Container, Card } from "@/components";
 import { getListsMovie } from "@/http/movies";
-import { MovieEndpointType, movieEndpoint } from "@/utils";
+import { MovieEndpointType, movieEndpoint } from "@/utils/contants";
 import { Movie } from "@/types";
 
 type IProps = {

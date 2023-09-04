@@ -5,7 +5,7 @@ import SearchBox from "./components/searchBox";
 
 import { Container, Section, Card } from "@/components";
 import { getTrendingMovies, getListsMovie, getMovieGenre } from "@/http/movies";
-import { movieEndpoint, tvShowsEndpoint } from "@/utils";
+import { movieEndpoint, tvShowsEndpoint } from "@/utils/contants";
 import { getListsTVShows, getTVShowsGenre } from "@/http/tv";
 import Styles from "@/styles/main.module.css";
 

@@ -1,4 +1,4 @@
-import { Genre, Movie, MovieDetail, MultiSearchResult } from "@/types";
+import { Genre, Movie, MovieDetail, MultiSearchResult, HttpMethod } from "@/types";
 
 interface MovieResponse {
   page: number;
@@ -17,8 +17,6 @@ interface SearchResponse {
 interface GenreResponse {
   genres: Genre[];
 }
-
-type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
 
 const BASE_URL = "https://api.themoviedb.org/3";
 
@@ -78,7 +76,7 @@ export async function getMovieGenre() {
 
 export async function getDetailMovie(id: number) {
   try {
-    const response = await fetch(`${BASE_URL}/movie/${id}`, CONFIG("GET"));
+    const response = await fetch(`${BASE_URL}/movie/${id}`, CONFIG("GET", true));
     const data: MovieDetail = await response.json();
     return data;
   } catch (error: any) {

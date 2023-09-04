@@ -79,7 +79,7 @@ export async function getTVShowsGenre() {
 
 export async function getDetailTVShows(id: number) {
   try {
-    const response = await fetch(`${BASE_URL}/tv/${id}`, CONFIG("GET"));
+    const response = await fetch(`${BASE_URL}/tv/${id}`, CONFIG("GET", true));
     const data: TVShowDetail = await response.json();
     return data;
   } catch (error: any) {

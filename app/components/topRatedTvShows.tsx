@@ -3,7 +3,7 @@
 import React, { useCallback, useState, useMemo } from "react";
 import { BsChevronCompactLeft, BsChevronCompactRight } from "react-icons/bs";
 import { Section, Card } from "@/components";
-import { genreStringify } from "@/utils";
+import { genreStringify } from "@/utils/data-process";
 
 type IProps = {
   _topRatedTvShows: any;

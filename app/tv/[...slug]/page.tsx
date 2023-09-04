@@ -4,7 +4,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import ReactPaginate from "react-paginate";
 import { Container, Card } from "@/components";
 import { getListsTVShows } from "@/http/tv";
-import { TvShowsEndpointType, tvShowsEndpoint } from "@/utils";
+import { TvShowsEndpointType, tvShowsEndpoint } from "@/utils/contants";
 import { TVShow } from "@/types";
 
 type IProps = {

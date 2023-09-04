@@ -1,6 +1,9 @@
 {
+  "plugins": ["@tanstack/query"],
   "extends": "next/core-web-vitals",
   "rules": {
-    "no-unused-vars": "error"
+    "no-unused-vars": "error",
+    "@tanstack/query/exhaustive-deps": "error",
+    "@tanstack/query/prefer-query-object-syntax": "error"
   }
 }
