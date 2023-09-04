@@ -163,4 +163,8 @@ export interface TVShowDetail {
   vote_count: number;
 }
 
-export interface MultiSearchResult extends Movie, TVShow {}
+export interface MultiSearchResult extends Movie, TVShow {
+  user?: string;
+}
+
+export type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";

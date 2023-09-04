@@ -5,7 +5,7 @@ import { IoCaretDownOutline } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
-import { DROPDOWN, DropdownMenu } from "@/utils";
+import { DROPDOWN, DropdownMenu } from "@/utils/contants";
 
 type IState = {
   [key: string]: boolean;
