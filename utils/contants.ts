@@ -1,3 +1,5 @@
+import { ToastOptions } from "react-toastify";
+
 export const DROPDOWN = {
   TV: ["Airing Today", "On The Air", "Popular", "Top Rated"],
   Movie: ["Now Playing", "Popular", "Top Rated", "Upcoming"]
@@ -30,3 +32,14 @@ export const TVShowsEpisodeAir = [
   "overview",
   "air_date"
 ];
+
+export const toastConfig: ToastOptions = {
+  position: "top-right",
+  autoClose: 2000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+  theme: "colored"
+};

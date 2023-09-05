@@ -2,6 +2,7 @@
 
 import React, { useMemo, useContext, useCallback } from "react";
 import { FaStar, FaHeart } from "react-icons/fa";
+import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
@@ -11,7 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Context } from "@/context/ContextProvider";
 import { getDetailTVShows } from "@/http/tv";
 import { exportGenre, exportProductionCountries } from "@/utils/data-process";
-import { TVShowsEpisodeAir } from "@/utils/contants";
+import { TVShowsEpisodeAir, toastConfig } from "@/utils/contants";
 import { Card, Container, DetailSection } from "@/components";
 import { addUserFavourite, deleteUserFavourite } from "@/http/favourite";
 
@@ -52,7 +53,11 @@ export default function Page({ params: { id } }: IProps) {
   }, [detailTVShows?.production_countries]);
 
   const addFavourite = useCallback(async () => {
-    await addUserFavourite(session?.user?.email as string, detailTVShows);
+    const response = await addUserFavourite(
+      session?.user?.email as string,
+      detailTVShows
+    );
+    if (response) toast.success("Added to Favourite", toastConfig);
   }, [session?.user?.email, detailTVShows]);
 
   const removeFavourite = useCallback(async () => {
@@ -60,7 +65,10 @@ export default function Page({ params: { id } }: IProps) {
       session?.user?.email as string,
       parseId
     );
-    if (response) router.back();
+    if (response) {
+      toast.info("Removed from Favourite", toastConfig);
+      router.back();
+    }
   }, [session?.user?.email, parseId, router]);
 
   return (

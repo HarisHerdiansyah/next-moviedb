@@ -2,6 +2,7 @@
 
 import React, { useMemo, useContext, useCallback } from "react";
 import { FaStar, FaHeart } from "react-icons/fa";
+import { toast } from "react-toastify";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -13,6 +14,7 @@ import { Container, DetailSection } from "@/components";
 import { getDetailMovie } from "@/http/movies";
 import { exportGenre, exportProductionCountries } from "@/utils/data-process";
 import { addUserFavourite, deleteUserFavourite } from "@/http/favourite";
+import { toastConfig } from "@/utils/contants";
 
 type IProps = {
   params: {
@@ -51,7 +53,11 @@ export default function Page({ params: { id } }: IProps) {
   }, [detailMovie?.production_countries]);
 
   const addFavourite = useCallback(async () => {
-    await addUserFavourite(session?.user?.email as string, detailMovie);
+    const response = await addUserFavourite(
+      session?.user?.email as string,
+      detailMovie
+    );
+    if (response) toast.success("Added to Favourite", toastConfig);
   }, [session?.user?.email, detailMovie]);
 
   const removeFavourite = useCallback(async () => {
@@ -59,7 +65,10 @@ export default function Page({ params: { id } }: IProps) {
       session?.user?.email as string,
       parseId
     );
-    if (response) router.back();
+    if (response) {
+      toast.info("Removed from Favourite", toastConfig);
+      router.back();
+    }
   }, [session?.user?.email, parseId, router]);
 
   return (

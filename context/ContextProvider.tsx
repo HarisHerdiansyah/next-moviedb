@@ -1,10 +1,11 @@
 "use client";
 
 import React, { createContext, useEffect, useCallback, useState } from "react";
+import { ToastContainer } from "react-toastify";
 import { useSession } from "next-auth/react";
-
 import { ref, onValue } from "firebase/database";
 import { database } from "@/utils/firebase";
+import "react-toastify/dist/ReactToastify.min.css";
 
 type IProps = {
   children: React.ReactNode;
@@ -45,5 +46,10 @@ export default function ContextProvider({ children }: IProps) {
     initUserFavouriteList();
   }, [initUserFavouriteList]);
 
-  return <Context.Provider value={value}>{children}</Context.Provider>;
+  return (
+    <Context.Provider value={value}>
+      {children}
+      <ToastContainer />
+    </Context.Provider>
+  );
 }
