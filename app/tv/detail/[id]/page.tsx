@@ -1,19 +1,18 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useContext, useCallback } from "react";
 import { FaStar, FaHeart } from "react-icons/fa";
 import { useSession } from "next-auth/react";
+import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { find } from "lodash";
 import { useQuery } from "@tanstack/react-query";
+import { Context } from "@/context/ContextProvider";
 import { getDetailTVShows } from "@/http/tv";
-import {
-  exportGenre,
-  exportProductionCountries,
-  getSessionData
-} from "@/utils/data-process";
-import { Card, Container } from "@/components";
+import { exportGenre, exportProductionCountries } from "@/utils/data-process";
+import { TVShowsEpisodeAir } from "@/utils/contants";
+import { Card, Container, DetailSection } from "@/components";
 import { addUserFavourite, deleteUserFavourite } from "@/http/favourite";
 
 type IProps = {
@@ -24,17 +23,19 @@ type IProps = {
 
 export default function Page({ params: { id } }: IProps) {
   const parseId = parseInt(id);
+  const { favList } = useContext(Context);
+  const currentRoute = usePathname();
+  const router = useRouter();
   const { data: session } = useSession();
   const { data: detailTVShows } = useQuery({
     queryKey: ["detailTVShows", parseId],
     queryFn: () => getDetailTVShows(parseId)
   });
 
-  const isFav = useMemo(() => {
-    const favList = getSessionData();
+  const isFavourite = useMemo(() => {
     const checkFav = find(favList, ["id", parseId]);
     return !!checkFav;
-  }, [parseId]);
+  }, [parseId, favList]);
 
   const genre = useMemo(() => {
     if (detailTVShows?.genres) {
@@ -50,10 +51,22 @@ export default function Page({ params: { id } }: IProps) {
     return "";
   }, [detailTVShows?.production_countries]);
 
+  const addFavourite = useCallback(async () => {
+    await addUserFavourite(session?.user?.email as string, detailTVShows);
+  }, [session?.user?.email, detailTVShows]);
+
+  const removeFavourite = useCallback(async () => {
+    const response = await deleteUserFavourite(
+      session?.user?.email as string,
+      parseId
+    );
+    if (response) router.back();
+  }, [session?.user?.email, parseId, router]);
+
   return (
     <>
       <div
-        className="w-full h-[500px] bg-fuchsia-400 bg-cover bg-no-repeat bg-center overflow-auto"
+        className="w-full h-[500px] bg-indigo-900/80 bg-cover bg-no-repeat bg-center overflow-auto"
         style={{
           backgroundImage: `url("https://image.tmdb.org/t/p/original${detailTVShows?.backdrop_path}")`
         }}
@@ -90,33 +103,24 @@ export default function Page({ params: { id } }: IProps) {
                 </tr>
               </tbody>
             </table>
-            {detailTVShows?.homepage && (
-              <Link
-                className="text-xl line-clamp-1 text-slate-50 mt-5 mb-10"
-                href={detailTVShows?.homepage}
-              >
-                Visit Homepage Here!
-              </Link>
-            )}
-            {isFav ? (
+            <Link
+              className="text-xl line-clamp-1 text-slate-50 my-5"
+              href={detailTVShows?.homepage ?? currentRoute}
+            >
+              Visit Homepage Here!
+            </Link>
+            {isFavourite ? (
               <button
-                className="bg-rose-500 text-rose-50 border-2 border-rose-500 font-semibold rounded px-5 py-3 flex items-center"
-                onClick={() =>
-                  deleteUserFavourite(session?.user?.email as string, parseId)
-                }
+                className="mt-10 bg-rose-500 text-rose-50 border-2 border-rose-500 font-semibold rounded px-5 py-3 flex items-center"
+                onClick={() => removeFavourite()}
               >
                 <FaHeart className="mr-2" />
                 Added
               </button>
             ) : (
               <button
-                className="bg-rose-50 hover:bg-rose-500 text-rose-600 hover:text-rose-50 border-2 border-rose-500 font-semibold rounded px-5 py-3 flex items-center transition-all"
-                onClick={() =>
-                  addUserFavourite(
-                    session?.user?.email as string,
-                    detailTVShows
-                  )
-                }
+                className="mt-10 bg-rose-50 hover:bg-rose-500 text-rose-600 hover:text-rose-50 border-2 border-rose-500 font-semibold rounded px-5 py-3 flex items-center transition-all"
+                onClick={() => addFavourite()}
               >
                 <FaHeart className="mr-2" />
                 Add to Favourite
@@ -128,82 +132,44 @@ export default function Page({ params: { id } }: IProps) {
       <Container>
         <div className="flex justify-between">
           <div className="pr-16">
-            <section className="mb-8">
-              <p className="text-2xl font-semibold mb-3">Overview :</p>
+            <DetailSection title="Overview">
               <article className="text-justify">
                 {detailTVShows?.overview}
               </article>
-            </section>
-            <section className="mb-8">
-              <p className="text-2xl font-semibold mb-3">
-                Last Episode to Air :
-              </p>
+            </DetailSection>
+            <DetailSection title="Last Episode to Air">
               <article className="text-justify flex flex-col gap-2">
-                <p>
-                  <span className="font-semibold">Title</span> :{" "}
-                  {detailTVShows?.last_episode_to_air?.name ?? "-"}
-                </p>
-                <p>
-                  <span className="font-semibold">Episode Number</span> :{" "}
-                  {detailTVShows?.last_episode_to_air?.episode_number ?? "-"}
-                </p>
-                <p>
-                  <span className="font-semibold">Season Number</span> :{" "}
-                  {detailTVShows?.last_episode_to_air?.season_number ?? "-"}
-                </p>
-                <p>
-                  <span className="font-semibold">Overview</span> :{" "}
-                  {detailTVShows?.last_episode_to_air?.overview ?? "-"}
-                </p>
-                <p>
-                  <span className="font-semibold">Air Date</span> :{" "}
-                  {detailTVShows?.last_episode_to_air?.air_date ?? "-"}
-                </p>
+                {TVShowsEpisodeAir.map((e) => (
+                  <p key={e}>
+                    <span className="font-semibold capitalize">
+                      {e.replace("_", " ")}
+                    </span>{" "}
+                    : {detailTVShows?.last_episode_to_air?.[e] ?? "-"}
+                  </p>
+                ))}
               </article>
-            </section>
-            <section className="mb-8">
-              <p className="text-2xl font-semibold mb-3">
-                Next Episode to Air :
-              </p>
+            </DetailSection>
+            <DetailSection title="Last Episode to Air">
               <article className="text-justify flex flex-col gap-2">
-                <p>
-                  <span className="font-semibold">Title</span> :{" "}
-                  {detailTVShows?.next_episode_to_air?.name ?? "-"}
-                </p>
-                <p>
-                  <span className="font-semibold">Episode Number</span> :{" "}
-                  {detailTVShows?.next_episode_to_air?.episode_number ?? "-"}
-                </p>
-                <p>
-                  <span className="font-semibold">Season Number</span> :{" "}
-                  {detailTVShows?.next_episode_to_air?.season_number ?? "-"}
-                </p>
-                <p>
-                  <span className="font-semibold">Overview</span> :{" "}
-                  {detailTVShows?.next_episode_to_air?.overview ?? "-"}
-                </p>
-                <p>
-                  <span className="font-semibold">Air Date</span> :{" "}
-                  {detailTVShows?.next_episode_to_air?.air_date ?? "-"}
-                </p>
+                {TVShowsEpisodeAir.map((e) => (
+                  <p key={e}>
+                    <span className="font-semibold capitalize">
+                      {e.replace("_", " ")}
+                    </span>{" "}
+                    : {detailTVShows?.next_episode_to_air?.[e] ?? "-"}
+                  </p>
+                ))}
               </article>
-            </section>
-            <section className="mb-8">
-              <p className="text-2xl font-semibold mb-3">
-                Tagline :{" "}
-                <span className="font-normal">{detailTVShows?.tagline}</span>
-              </p>
-            </section>
-            <section className="mb-8">
-              <p className="text-2xl font-semibold mb-3">
-                Production Countries :{" "}
-                <span className="font-normal">{countries}</span>
-              </p>
-            </section>
-            <section className="mb-8">
-              <p className="text-2xl font-semibold mb-3">
-                Production Companies :
-              </p>
+            </DetailSection>
+            <DetailSection
+              title="Tagline"
+              inlineContent={detailTVShows?.tagline}
+            />
+            <DetailSection
+              title="Production Contries"
+              inlineContent={countries}
+            />
+            <DetailSection title="Production Companies">
               <div className="flex flex-wrap items-center gap-8">
                 {detailTVShows?.production_companies.map((e) => {
                   return (
@@ -220,9 +186,8 @@ export default function Page({ params: { id } }: IProps) {
                   );
                 })}
               </div>
-            </section>
-            <section className="mb-8">
-              <p className="text-2xl font-semibold mb-3">Season :</p>
+            </DetailSection>
+            <DetailSection title="Season">
               <div className="flex flex-wrap items-center gap-8">
                 {detailTVShows?.seasons.map((e) => (
                   <Card
@@ -235,7 +200,7 @@ export default function Page({ params: { id } }: IProps) {
                   />
                 ))}
               </div>
-            </section>
+            </DetailSection>
             <section className="my-20"></section>
           </div>
           <div className="w-[300px] h-fit border-2 border-stone-500 p-5 flex-shrink-0">

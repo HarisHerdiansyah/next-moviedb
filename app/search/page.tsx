@@ -1,43 +1,39 @@
 "use client";
 
-import React, { useState, useCallback, useEffect } from "react";
-import { Container, Card } from "@/components";
-import { MultiSearchResult } from "@/types";
-import { searchMovieAndShows } from "@/http/movies";
-import { useSearchParams } from "next/navigation";
+import React, { useState } from "react";
 import ReactPaginate from "react-paginate";
+import { useSearchParams } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { Container, Card } from "@/components";
+import { searchMovieAndShows } from "@/http/movies";
 
 export default function Page() {
   const searchParams = useSearchParams();
-  const [searchResult, setSearchResult] = useState<MultiSearchResult[]>([]);
+  const keyword = searchParams.get("keyword") ?? "";
   const [pageAndResult, setPageAndResult] = useState({
     page: 0,
     result: 0
   });
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const getSearchResult = useCallback(async () => {
-    const keyword = searchParams.get("keyword") ?? "";
-    const response = await searchMovieAndShows(keyword, currentPage);
-    setSearchResult(response.results);
-    setPageAndResult({
-      page: response.total_pages,
-      result: response.total_results
-    });
-  }, [searchParams, currentPage]);
-
-  useEffect(() => {
-    getSearchResult();
-  }, [getSearchResult]);
+  const { data, isFetching } = useQuery({
+    queryKey: ["searchResult", keyword, currentPage],
+    queryFn: () => searchMovieAndShows(keyword, currentPage),
+    onSuccess(data) {
+      setPageAndResult({
+        page: data.total_pages,
+        result: data.total_results
+      });
+    }
+  });
 
   return (
     <Container>
       <p className="text-2xl font-semibold mb-10">
-        Search result {pageAndResult.page} pages with {pageAndResult.result}{" "}
-        items :
+        {isFetching ? "Loading . . . ." : `Search result for ${keyword}:`}
       </p>
       <div className="flex flex-wrap justify-around items-start gap-x-8 gap-y-20">
-        {searchResult.map((res) => (
+        {data?.results?.map((res) => (
           <Card
             key={res.id}
             id={res.id}

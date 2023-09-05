@@ -1,5 +1,3 @@
-import path from "path";
-
 export const DROPDOWN = {
   TV: ["Airing Today", "On The Air", "Popular", "Top Rated"],
   Movie: ["Now Playing", "Popular", "Top Rated", "Upcoming"]
@@ -25,5 +23,10 @@ export const tvShowsEndpoint = {
 
 export type TvShowsEndpointType = keyof typeof tvShowsEndpoint;
 
-export const localPath = (fileName: string) =>
-  path.join(process.cwd(), "local", fileName);
+export const TVShowsEpisodeAir = [
+  "title",
+  "episode_number",
+  "season_number",
+  "overview",
+  "air_date"
+];

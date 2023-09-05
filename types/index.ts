@@ -29,20 +29,8 @@ interface CreatedBy {
   profile_path: string;
 }
 
-interface LastEpisodeAir {
-  id: number;
-  name: string;
-  overview: string;
-  vote_average: number;
-  vote_count: number;
-  air_date: string;
-  episode_number: number;
-  episode_type: string;
-  production_code: string;
-  runtime: number;
-  season_number: number;
-  show_id: number;
-  still_path: string;
+interface EpisodeAir {
+  [key: string]: any;
 }
 
 interface Networks {
@@ -140,9 +128,9 @@ export interface TVShowDetail {
   in_production: true;
   languages: string[];
   last_air_date: string;
-  last_episode_to_air: LastEpisodeAir;
+  last_episode_to_air: EpisodeAir;
   name: string;
-  next_episode_to_air: LastEpisodeAir;
+  next_episode_to_air: EpisodeAir;
   networks: Networks[];
   number_of_episodes: number;
   number_of_seasons: number;

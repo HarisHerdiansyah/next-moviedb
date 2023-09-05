@@ -1,19 +1,17 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useContext, useCallback } from "react";
 import { FaStar, FaHeart } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { find } from "lodash";
 import { useQuery } from "@tanstack/react-query";
-import { Container } from "@/components";
+import { Context } from "@/context/ContextProvider";
+import { Container, DetailSection } from "@/components";
 import { getDetailMovie } from "@/http/movies";
-import {
-  exportGenre,
-  exportProductionCountries,
-  getSessionData
-} from "@/utils/data-process";
+import { exportGenre, exportProductionCountries } from "@/utils/data-process";
 import { addUserFavourite, deleteUserFavourite } from "@/http/favourite";
 
 type IProps = {
@@ -24,17 +22,19 @@ type IProps = {
 
 export default function Page({ params: { id } }: IProps) {
   const parseId = parseInt(id);
-  const { data: sesssion } = useSession();
+  const { favList } = useContext(Context);
+  const currentRoute = usePathname();
+  const router = useRouter();
+  const { data: session } = useSession();
   const { data: detailMovie } = useQuery({
     queryKey: ["detailMovie", parseId],
     queryFn: () => getDetailMovie(parseId)
   });
 
-  const isFav = useMemo(() => {
-    const favList = getSessionData();
+  const isFavourite = useMemo(() => {
     const checkFav = find(favList, ["id", parseId]);
     return !!checkFav;
-  }, [parseId]);
+  }, [parseId, favList]);
 
   const genre = useMemo(() => {
     if (detailMovie?.genres) {
@@ -50,10 +50,22 @@ export default function Page({ params: { id } }: IProps) {
     return "";
   }, [detailMovie?.production_countries]);
 
+  const addFavourite = useCallback(async () => {
+    await addUserFavourite(session?.user?.email as string, detailMovie);
+  }, [session?.user?.email, detailMovie]);
+
+  const removeFavourite = useCallback(async () => {
+    const response = await deleteUserFavourite(
+      session?.user?.email as string,
+      parseId
+    );
+    if (response) router.back();
+  }, [session?.user?.email, parseId, router]);
+
   return (
     <>
       <div
-        className="w-full h-[500px] bg-fuchsia-400 bg-cover bg-no-repeat bg-center overflow-auto"
+        className="w-full h-[500px] bg-indigo-900/80 bg-cover bg-no-repeat bg-center overflow-auto"
         style={{
           backgroundImage: `url("https://image.tmdb.org/t/p/original${detailMovie?.backdrop_path}")`
         }}
@@ -86,30 +98,24 @@ export default function Page({ params: { id } }: IProps) {
                 </tr>
               </tbody>
             </table>
-            {detailMovie?.homepage && (
-              <Link
-                className="text-xl line-clamp-1 text-slate-50 my-5"
-                href={detailMovie?.homepage}
-              >
-                Visit Homepage Here!
-              </Link>
-            )}
-            {isFav ? (
+            <Link
+              className="text-xl line-clamp-1 text-slate-50 my-5"
+              href={detailMovie?.homepage ?? currentRoute}
+            >
+              Visit Homepage Here!
+            </Link>
+            {isFavourite ? (
               <button
-                className="bg-rose-500 text-rose-50 border-2 border-rose-500 font-semibold rounded px-5 py-3 flex items-center"
-                onClick={() =>
-                  deleteUserFavourite(sesssion?.user?.email as string, parseId)
-                }
+                className="mt-10 bg-rose-500 text-rose-50 border-2 border-rose-500 font-semibold rounded px-5 py-3 flex items-center"
+                onClick={() => removeFavourite()}
               >
                 <FaHeart className="mr-2" />
                 Added
               </button>
             ) : (
               <button
-                className="bg-rose-50 hover:bg-rose-500 text-rose-600 hover:text-rose-50 border-2 border-rose-500 font-semibold rounded px-5 py-3 flex items-center transition-all"
-                onClick={() =>
-                  addUserFavourite(sesssion?.user?.email as string, detailMovie)
-                }
+                className="mt-10 bg-rose-50 hover:bg-rose-500 text-rose-600 hover:text-rose-50 border-2 border-rose-500 font-semibold rounded px-5 py-3 flex items-center transition-all"
+                onClick={() => addFavourite()}
               >
                 <FaHeart className="mr-2" />
                 Add to Favourite
@@ -121,28 +127,20 @@ export default function Page({ params: { id } }: IProps) {
       <Container>
         <div className="flex justify-between">
           <div className="pr-16">
-            <section className="mb-8">
-              <p className="text-2xl font-semibold mb-3">Overview :</p>
+            <DetailSection title="Overview">
               <article className="text-justify">
                 {detailMovie?.overview}
               </article>
-            </section>
-            <section className="mb-8">
-              <p className="text-2xl font-semibold mb-3">
-                Tagline :{" "}
-                <span className="font-normal">{detailMovie?.tagline}</span>
-              </p>
-            </section>
-            <section className="mb-8">
-              <p className="text-2xl font-semibold mb-3">
-                Production Countries :{" "}
-                <span className="font-normal">{countries}</span>
-              </p>
-            </section>
-            <section className="mb-8">
-              <p className="text-2xl font-semibold mb-3">
-                Production Companies :
-              </p>
+            </DetailSection>
+            <DetailSection
+              title="Tagline"
+              inlineContent={detailMovie?.tagline}
+            />
+            <DetailSection
+              title="Production Countries"
+              inlineContent={countries}
+            />
+            <DetailSection title="Production Companies">
               <div className="flex flex-wrap items-center gap-8">
                 {detailMovie?.production_companies.map((e) => {
                   return (
@@ -159,7 +157,7 @@ export default function Page({ params: { id } }: IProps) {
                   );
                 })}
               </div>
-            </section>
+            </DetailSection>
           </div>
           <div className="w-[300px] h-fit border-2 border-stone-500 p-5 flex-shrink-0">
             <p className="text-center">Rating :</p>

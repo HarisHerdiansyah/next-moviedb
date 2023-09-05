@@ -1,4 +1,3 @@
-import { removeFavourite, setFavourite } from "@/utils/data-process";
 import { database } from "@/utils/firebase";
 import { ref, child, get, set, push, remove } from "firebase/database";
 
@@ -20,7 +19,7 @@ export async function addUserFavourite(_userRef: string, payload: any) {
     const userRef = _userRef.replace(/@gmail.com/g, "");
     const newListRef = push(ref(database, `/favourite/${userRef}`));
     await set(newListRef, payload);
-    setFavourite(payload);
+    return true;
   } catch (e: any) {
     throw new Error(e.message);
   }
@@ -38,7 +37,7 @@ export async function deleteUserFavourite(_userRef: string, id: number) {
       }
     }
     await remove(ref(database, `/favourite/${userRef}/${dataRef}`));
-    removeFavourite(id);
+    return true;
   } catch (e: any) {
     throw new Error(e.message);
   }
