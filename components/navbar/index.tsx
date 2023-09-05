@@ -36,16 +36,13 @@ export default function Navbar() {
               <p
                 className="text-gray-700 px-4 py-2 text-sm hover:font-semibold"
                 key={e}
-                onClick={() => {
-                  if (!session) {
-                    return router.push("/api/auth/signin");
-                  }
-                  return router.push(
+                onClick={() =>
+                  router.push(
                     `/${menu.toLowerCase()}/${e
                       .toLowerCase()
                       .replaceAll(" ", "-")}`
-                  );
-                }}
+                  )
+                }
               >
                 {e}
               </p>
@@ -54,7 +51,7 @@ export default function Navbar() {
         </div>
       );
     },
-    [router, session]
+    [router]
   );
 
   return (
