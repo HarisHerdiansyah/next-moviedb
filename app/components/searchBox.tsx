@@ -9,7 +9,7 @@ export default function SearchBox() {
   const [searchVal, setSearchVal] = useState<string>("");
 
   return (
-    <div className="w-full bg-gradient-to-tr from-indigo-800 to-indigo-600 p-8 rounded">
+    <div className="w-full bg-indigo-900/80 p-8 rounded">
       <p className="text-white text-4xl font-bold mb-5">
         Welcome{session ? `, ${session?.user?.name}!` : "!"}
       </p>
@@ -21,7 +21,7 @@ export default function SearchBox() {
           <input
             type="text"
             name="search"
-            id="serach"
+            id="search"
             placeholder="Search here"
             className="w-3/4 shadow appearance-none border rounded py-2 px-3 text-black leading-tight focus:outline-none focus:shadow-outline"
             autoComplete="off"

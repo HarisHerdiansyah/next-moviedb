@@ -45,7 +45,6 @@ export default async function page() {
               key={movie.id}
               id={movie.id}
               title={movie.title}
-              lang={movie.original_language}
               imgSrc={movie.poster_path}
               releaseDate={movie.release_date}
               rating={movie.vote_average}
@@ -64,7 +63,6 @@ export default async function page() {
               key={movie.id}
               id={movie.id}
               title={movie.title}
-              lang={movie.original_language}
               imgSrc={movie.poster_path}
               releaseDate={movie.release_date}
               rating={movie.vote_average}
@@ -88,7 +86,6 @@ export default async function page() {
               key={show.id}
               id={show.id}
               title={show.name}
-              lang={show.original_language}
               imgSrc={show.poster_path}
               rating={show.vote_average}
               isList

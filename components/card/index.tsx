@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import moment from "moment";
 import { FaStar } from "react-icons/fa";
@@ -9,7 +9,6 @@ import { useSession } from "next-auth/react";
 
 type IProps = {
   title: string;
-  lang?: string;
   imgSrc: string;
   releaseDate?: string;
   id: number | string;
@@ -29,9 +28,9 @@ export default function Card({
   isList,
   menu
 }: IProps) {
-  const imageSource = imgSrc
-    ? `https://image.tmdb.org/t/p/original${imgSrc}`
-    : "/image/default.png";
+  const [imageSource, setImageSource] = useState<string>(
+    `https://image.tmdb.org/t/p/original${imgSrc}`
+  );
   const router = useRouter();
   const { data: session } = useSession();
 
@@ -46,7 +45,15 @@ export default function Card({
       }}
     >
       <div className="w-[171px] h-[260px] overflow-hidden rounded-sm">
-        <Image src={imageSource} alt={title} width={171} height={260} />
+        <Image
+          src={imageSource}
+          alt={title}
+          width={171}
+          height={260}
+          onError={() => {
+            setImageSource("/image/default.png");
+          }}
+        />
       </div>
       <div className="mt-3">
         {isList && (

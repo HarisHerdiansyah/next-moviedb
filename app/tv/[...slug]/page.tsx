@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState } from "react";
 import ReactPaginate from "react-paginate";
+import { useQuery } from "@tanstack/react-query";
 import { Container, Card } from "@/components";
 import { getListsTVShows } from "@/http/tv";
 import { TvShowsEndpointType, tvShowsEndpoint } from "@/utils/contants";
-import { TVShow } from "@/types";
 
 type IProps = {
   params: {
@@ -14,39 +14,32 @@ type IProps = {
 };
 
 export default function Page({ params: { slug } }: IProps) {
-  const [requestResult, setRequestResult] = useState<TVShow[]>([]);
   const [pageAndResult, setPageAndResult] = useState({
     page: 0,
     result: 0
   });
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const getRequestResult = useCallback(async () => {
-    const endpoint: TvShowsEndpointType = slug[0];
-    const response = await getListsTVShows(
-      tvShowsEndpoint[endpoint],
-      currentPage,
-      true
-    );
-    setRequestResult(response.results);
-    setPageAndResult({
-      page: response.total_pages,
-      result: response.total_results
-    });
-  }, [slug, currentPage]);
-
-  useEffect(() => {
-    getRequestResult();
-  }, [getRequestResult]);
+  const { data, isFetching } = useQuery({
+    queryKey: [`movie-${slug[0]}`, currentPage],
+    queryFn: () => getListsTVShows(tvShowsEndpoint[slug[0]], currentPage, true),
+    onSuccess(data) {
+      setPageAndResult({
+        page: data.total_pages,
+        result: data.total_results
+      });
+    }
+  });
 
   return (
     <Container>
       <p className="text-2xl font-semibold mb-10">
-        TV Shows result {pageAndResult.page} pages with {pageAndResult.result}{" "}
-        items :
+        {isFetching
+          ? "Loading . . . ."
+          : `Result for TV Shows (${slug[0].replaceAll("-", " ")}):`}
       </p>
       <div className="flex flex-wrap justify-around items-start gap-x-8 gap-y-20">
-        {requestResult.map((res) => (
+        {data?.results?.map((res) => (
           <Card
             key={res.id}
             id={res.id}

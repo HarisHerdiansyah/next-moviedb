@@ -83,6 +83,12 @@ export default function Navbar() {
             <IoCaretDownOutline color="white" />
             {isDropdownOpen.tv && mapMenu("TV")}
           </div>
+          <Link
+            href="/favourite"
+            className="text-base text-white font-semibold"
+          >
+            Favourite
+          </Link>
         </div>
       </div>
       {session ? (
