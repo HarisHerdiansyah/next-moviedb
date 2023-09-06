@@ -157,7 +157,7 @@ export default function Page({ params: { id } }: IProps) {
                 ))}
               </article>
             </DetailSection>
-            <DetailSection title="Last Episode to Air">
+            <DetailSection title="Next Episode to Air">
               <article className="text-justify flex flex-col gap-2">
                 {TVShowsEpisodeAir.map((e) => (
                   <p key={e}>
