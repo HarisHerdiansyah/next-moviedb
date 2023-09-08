@@ -30,7 +30,6 @@ export default function Page() {
               imgSrc={res.poster_path}
               releaseDate={isMovie ? res.release_date : res.first_air_date}
               rating={res.vote_average}
-              isList
             />
           );
         })}

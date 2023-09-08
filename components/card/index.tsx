@@ -14,7 +14,6 @@ type IProps = {
   id: number | string;
   className?: string;
   rating?: number;
-  isList: boolean;
   menu?: string;
 };
 
@@ -25,7 +24,6 @@ export default function Card({
   id,
   className,
   rating,
-  isList,
   menu
 }: IProps) {
   const [imageSource, setImageSource] = useState<string>(
@@ -56,18 +54,14 @@ export default function Card({
         />
       </div>
       <div className="mt-3">
-        {isList && (
-          <div className="mb-1 flex items-center gap-1">
-            <FaStar className="text-yellow-400" />
-            <p className="font-semibold m-0">{rating?.toFixed(1)}</p>
-          </div>
-        )}
+        <div className="mb-1 flex items-center gap-1">
+          <FaStar className="text-yellow-400" />
+          <p className="font-semibold m-0">{rating?.toFixed(1)}</p>
+        </div>
         <p className="text-slate-500 text-left">
           {releaseDate && moment(releaseDate).format("MMMM YYYY")}
         </p>
-        {isList && (
-          <p className="text-base font-semibold line-clamp-2">{title}</p>
-        )}
+        <p className="text-base font-semibold line-clamp-2">{title}</p>
       </div>
     </div>
   );

@@ -1,9 +1,13 @@
 "use client";
 
 import React, { useCallback, useState, useMemo } from "react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { BsChevronCompactLeft, BsChevronCompactRight } from "react-icons/bs";
-import { Section, Card } from "@/components";
+import { Section } from "@/components";
 import { genreStringify } from "@/utils/data-process";
+import { Movie } from "@/types";
 
 type IProps = {
   _upcomingMovies: any;
@@ -12,6 +16,8 @@ type IProps = {
 
 export default function Component({ _movieGenre, _upcomingMovies }: IProps) {
   const [currentMovie, setCurrentMovie] = useState<number>(0);
+  const router = useRouter();
+  const { data: session } = useSession();
 
   const setPrevMovie = useCallback(() => {
     if (currentMovie === 0) setCurrentMovie(_upcomingMovies.length - 1);
@@ -24,7 +30,7 @@ export default function Component({ _movieGenre, _upcomingMovies }: IProps) {
   }, [currentMovie, _upcomingMovies.length]);
 
   const movieCarousel = useMemo(() => {
-    const movie = _upcomingMovies[currentMovie];
+    const movie: Movie = _upcomingMovies[currentMovie];
     const genre = genreStringify(movie.genre_ids, _movieGenre);
     return (
       <div
@@ -41,14 +47,11 @@ export default function Component({ _movieGenre, _upcomingMovies }: IProps) {
             <BsChevronCompactLeft className="text-white text-4xl" />
           </div>
           <div className="flex gap-14 items-center justify-center">
-            <Card
-              id={movie.id}
-              imgSrc={movie.poster_path}
-              title={movie.title}
-              rating={movie.vote_average}
-              isList={false}
-              menu="movie"
-              className="flex-shrink-0 w-1/4"
+            <Image
+              src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
+              alt={movie.title}
+              width={171}
+              height={260}
             />
             <div className="max-w-[768px]">
               <p className="text-4xl line-clamp-1 text-slate-50 font-semibold my-5">
@@ -61,8 +64,16 @@ export default function Component({ _movieGenre, _upcomingMovies }: IProps) {
                 Language : {movie.original_language.toUpperCase()}
               </p>
               <p className="text-lg text-white inline">Genre : {genre}</p>
-              <button className="bg-cyan-200 my-5 px-6 py-3 rounded-full border-2 border-black font-semibold hover:bg-cyan-400 block">
-                Watch Now
+              <button
+                className="bg-cyan-200 my-5 px-6 py-3 rounded-full border-2 border-black font-semibold hover:bg-cyan-400 block"
+                onClick={() => {
+                  if (!session) {
+                    return router.push("/api/auth/signin");
+                  }
+                  return router.push(`/movie/detail/${movie.id}`);
+                }}
+              >
+                See Details
               </button>
             </div>
           </div>
@@ -75,7 +86,15 @@ export default function Component({ _movieGenre, _upcomingMovies }: IProps) {
         </div>
       </div>
     );
-  }, [_upcomingMovies, _movieGenre, currentMovie, setNextMovie, setPrevMovie]);
+  }, [
+    _upcomingMovies,
+    _movieGenre,
+    currentMovie,
+    setNextMovie,
+    setPrevMovie,
+    router,
+    session
+  ]);
 
   const RenderMain = useMemo(() => {
     return <Section title="Upcoming movies">{movieCarousel}</Section>;

@@ -204,7 +204,6 @@ export default function Page({ params: { id } }: IProps) {
                     key={e.id}
                     id={e.id}
                     rating={e.vote_average}
-                    isList
                   />
                 ))}
               </div>

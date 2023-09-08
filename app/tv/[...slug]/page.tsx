@@ -48,7 +48,6 @@ export default function Page({ params: { slug } }: IProps) {
             imgSrc={res.poster_path}
             releaseDate={res.first_air_date}
             rating={res.vote_average}
-            isList
           />
         ))}
       </div>
