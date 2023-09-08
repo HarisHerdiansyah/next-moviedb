@@ -44,7 +44,6 @@ export default function Page() {
               res.media_type === "movie" ? res.release_date : res.first_air_date
             }
             rating={res.vote_average}
-            isList
           />
         ))}
       </div>

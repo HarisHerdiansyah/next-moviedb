@@ -1,9 +1,13 @@
 "use client";
 
 import React, { useCallback, useState, useMemo } from "react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { BsChevronCompactLeft, BsChevronCompactRight } from "react-icons/bs";
-import { Section, Card } from "@/components";
+import { Section } from "@/components";
 import { genreStringify } from "@/utils/data-process";
+import { TVShow } from "@/types";
 
 type IProps = {
   _topRatedTvShows: any;
@@ -12,6 +16,8 @@ type IProps = {
 
 export default function Component({ _genre, _topRatedTvShows }: IProps) {
   const [currentShows, setCurrentShows] = useState<number>(0);
+  const router = useRouter();
+  const { data: session } = useSession();
 
   const setPrevShows = useCallback(() => {
     if (currentShows === 0) setCurrentShows(_topRatedTvShows.length - 1);
@@ -24,7 +30,7 @@ export default function Component({ _genre, _topRatedTvShows }: IProps) {
   }, [currentShows, _topRatedTvShows.length]);
 
   const showsCarousel = useMemo(() => {
-    const shows = _topRatedTvShows[currentShows];
+    const shows: TVShow = _topRatedTvShows[currentShows];
     const genre = genreStringify(shows.genre_ids, _genre);
     return (
       <div
@@ -41,13 +47,11 @@ export default function Component({ _genre, _topRatedTvShows }: IProps) {
             <BsChevronCompactLeft className="text-white text-4xl" />
           </div>
           <div className="flex gap-14 items-center justify-center">
-            <Card
-              id={shows.id}
-              imgSrc={shows.poster_path}
-              title={shows.name}
-              className="flex-shrink-0 w-1/4"
-              isList={false}
-              menu="tv"
+            <Image
+              src={`https://image.tmdb.org/t/p/original${shows.poster_path}`}
+              alt={shows.name}
+              width={171}
+              height={260}
             />
             <div className="max-w-[768px]">
               <p className="text-4xl line-clamp-1 text-slate-50 font-semibold my-5">
@@ -63,8 +67,16 @@ export default function Component({ _genre, _topRatedTvShows }: IProps) {
                 Rating : {shows.vote_average}
               </p>
               <p className="text-lg text-white">Genre : {genre}</p>
-              <button className="bg-cyan-200 my-5 px-6 py-3 rounded-full border-2 border-black font-semibold hover:bg-cyan-400">
-                Watch Now
+              <button
+                className="bg-cyan-200 my-5 px-6 py-3 rounded-full border-2 border-black font-semibold hover:bg-cyan-400"
+                onClick={() => {
+                  if (!session) {
+                    return router.push("/api/auth/signin");
+                  }
+                  return router.push(`/tv/detail/${shows.id}`);
+                }}
+              >
+                See Details
               </button>
             </div>
           </div>
@@ -77,7 +89,15 @@ export default function Component({ _genre, _topRatedTvShows }: IProps) {
         </div>
       </div>
     );
-  }, [_topRatedTvShows, _genre, currentShows, setNextShows, setPrevShows]);
+  }, [
+    _topRatedTvShows,
+    _genre,
+    currentShows,
+    setNextShows,
+    setPrevShows,
+    router,
+    session
+  ]);
 
   const RenderMain = useMemo(() => {
     return <Section title="Top Rated TV Shows">{showsCarousel}</Section>;

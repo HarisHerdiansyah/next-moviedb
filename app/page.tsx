@@ -48,7 +48,6 @@ export default async function page() {
               imgSrc={movie.poster_path}
               releaseDate={movie.release_date}
               rating={movie.vote_average}
-              isList
             />
           ))}
         </div>
@@ -66,7 +65,6 @@ export default async function page() {
               imgSrc={movie.poster_path}
               releaseDate={movie.release_date}
               rating={movie.vote_average}
-              isList
             />
           ))}
         </div>
@@ -87,8 +85,8 @@ export default async function page() {
               id={show.id}
               title={show.name}
               imgSrc={show.poster_path}
+              releaseDate={show.first_air_date}
               rating={show.vote_average}
-              isList
             />
           ))}
         </div>
