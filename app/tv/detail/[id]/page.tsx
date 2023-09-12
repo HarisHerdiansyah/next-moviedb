@@ -74,12 +74,12 @@ export default function Page({ params: { id } }: IProps) {
   return (
     <>
       <div
-        className="w-full h-[500px] bg-indigo-900/80 bg-cover bg-no-repeat bg-center overflow-auto"
+        className="w-full h-[800px] lg:h-[500px] bg-indigo-900/80 bg-cover bg-no-repeat bg-center overflow-auto"
         style={{
           backgroundImage: `url("https://image.tmdb.org/t/p/original${detailTVShows?.backdrop_path}")`
         }}
       >
-        <div className="bg-black/30 backdrop-blur-sm py-16 px-32 w-full h-full flex items-start gap-14">
+        <div className="bg-black/30 backdrop-blur-sm p-4 sm:py-8 sm:px-8 lg:py-16 lg:px-32 w-full h-full flex justify-center items-center flex-col gap-8 lg:justify-start lg:items-start lg:gap-14 lg:flex-row">
           <Image
             alt="sample"
             src={`https://image.tmdb.org/t/p/original${detailTVShows?.poster_path}`}
@@ -87,12 +87,12 @@ export default function Page({ params: { id } }: IProps) {
             height={400}
             className="flex-shrink-0"
           />
-          <div className="pr-12">
-            <p className="text-4xl line-clamp-1 text-slate-50 font-semibold mb-5">
+          <div className="pr-0 lg:pr-12">
+            <p className="text-xl sm:text-2xl md:3xl lg:text-4xl line-clamp-1 text-slate-50 font-semibold mb-5">
               {detailTVShows?.name}
             </p>
-            <table className="border-spacing-x-9 border-separate">
-              <tbody className="text-slate-50 text-xl">
+            <table className="hidden sm:block sm:border-spacing-x-9 sm:border-separate">
+              <tbody className="text-slate-50 sm:text-lg md:text-xl">
                 <tr>
                   <td>Original Title</td>
                   <td>: {detailTVShows?.original_name}</td>
@@ -111,15 +111,33 @@ export default function Page({ params: { id } }: IProps) {
                 </tr>
               </tbody>
             </table>
+            <div className="sm:hidden text-white">
+              <div className="my-2">
+                <p className="font-semibold">Original Title :</p>
+                <p>{detailTVShows?.original_name}</p>
+              </div>
+              <div className="my-2">
+                <p className="font-semibold">First Air Date :</p>
+                <p>{detailTVShows?.first_air_date}</p>
+              </div>
+              <div className="my-2">
+                <p className="font-semibold">Rating :</p>
+                <p>{detailTVShows?.vote_average.toFixed(1)}</p>
+              </div>
+              <div className="my-2">
+                <p className="font-semibold">Genre :</p>
+                <p>{genre}</p>
+              </div>
+            </div>
             <Link
-              className="text-xl line-clamp-1 text-slate-50 my-5"
+              className="sm:text-lg md:text-xl line-clamp-1 text-slate-50 my-5"
               href={detailTVShows?.homepage ?? currentRoute}
             >
               Visit Homepage Here!
             </Link>
             {isFavourite ? (
               <button
-                className="mt-10 bg-rose-500 text-rose-50 border-2 border-rose-500 font-semibold rounded px-5 py-3 flex items-center"
+                className="sm:mt-5 lg:mt-10 bg-rose-500 text-rose-50 border-2 border-rose-500 font-semibold rounded px-3 py-2 sm:px-5 sm:py-3 flex items-center"
                 onClick={() => removeFavourite()}
               >
                 <FaHeart className="mr-2" />
@@ -127,7 +145,7 @@ export default function Page({ params: { id } }: IProps) {
               </button>
             ) : (
               <button
-                className="mt-10 bg-rose-50 hover:bg-rose-500 text-rose-600 hover:text-rose-50 border-2 border-rose-500 font-semibold rounded px-5 py-3 flex items-center transition-all"
+                className="sm:mt-5 lg:mt-10 bg-rose-50 hover:bg-rose-500 text-rose-600 hover:text-rose-50 border-2 border-rose-500 font-semibold rounded px-3 py-2 sm:px-5 sm:py-3 flex items-center transition-all"
                 onClick={() => addFavourite()}
               >
                 <FaHeart className="mr-2" />
@@ -138,8 +156,8 @@ export default function Page({ params: { id } }: IProps) {
         </div>
       </div>
       <Container>
-        <div className="flex justify-between">
-          <div className="pr-16">
+        <div className="flex flex-col justify-center lg:justify-between lg:flex-row">
+          <div className="mt-10 pr-0 lg:mt-0 lg:pr-16">
             <DetailSection title="Overview">
               <article className="text-justify">
                 {detailTVShows?.overview}
@@ -208,9 +226,8 @@ export default function Page({ params: { id } }: IProps) {
                 ))}
               </div>
             </DetailSection>
-            <section className="my-20"></section>
           </div>
-          <div className="w-[300px] h-fit border-2 border-stone-500 p-5 flex-shrink-0">
+          <div className="sm:w-full lg:w-[300px] h-fit border-2 border-stone-500 p-5 flex-shrink-0 order-first lg:order-last">
             <p className="text-xl font-medium text-center">Rating :</p>
             <div className="flex items-center justify-center my-3 gap-3">
               <FaStar size={40} className="text-yellow-400" />

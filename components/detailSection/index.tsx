@@ -13,7 +13,7 @@ export default function DetailSection({
 }: IProps) {
   return (
     <section className="mb-8">
-      <p className="text-2xl font-semibold mb-3">
+      <p className="sm:text-xl lg:text-2xl font-semibold mb-3">
         {title} : {inlineContent && <span className="font-normal">{inlineContent}</span>}
       </p>
       {children}

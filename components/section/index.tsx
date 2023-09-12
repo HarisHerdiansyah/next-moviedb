@@ -8,7 +8,7 @@ type IProps = {
 export default function Section({ children, title }: IProps) {
   return (
     <div className="my-10">
-      <p className="text-2xl font-medium">{title}</p>
+      <p className="text-xl sm:text-2xl font-medium">{title}</p>
       {children}
     </div>
   );
