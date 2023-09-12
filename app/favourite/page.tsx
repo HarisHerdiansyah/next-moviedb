@@ -17,8 +17,8 @@ export default function Page() {
 
   return (
     <Container>
-      <p className="text-2xl font-semibold mb-10">Favourite :</p>
-      <div className="flex flex-wrap justify-start items-start gap-x-8 gap-y-20">
+      <p className="text-lg sm:text-2xl font-semibold mb-10">Favourite :</p>
+      <div className="flex flex-wrap justify-around items-start gap-x-8 gap-y-20">
         {favList.map((res: MultiSearchResult) => {
           const isMovie = checkIsMovie(res);
           return (

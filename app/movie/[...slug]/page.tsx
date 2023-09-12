@@ -33,7 +33,7 @@ export default function Page({ params: { slug } }: IProps) {
 
   return (
     <Container>
-      <p className="text-2xl font-semibold mb-10">
+      <p className="text-lg sm:text-2xl font-semibold mb-10">
         {isFetching
           ? "Loading . . . ."
           : `Result for Movie (${slug[0].replaceAll("-", " ")}):`}
@@ -52,15 +52,20 @@ export default function Page({ params: { slug } }: IProps) {
         ))}
       </div>
       {pageAndResult.page > 1 && (
-        <ReactPaginate
-          pageCount={pageAndResult.page}
-          onPageChange={({ selected }) => setCurrentPage(selected + 1)}
-          previousLabel="< Prev"
-          nextLabel="Next >"
-          containerClassName="flex items-center mt-20 mb-10 gap-3 text-xl"
-          pageClassName="py-1 px-2 rounded w-fit text-center flex-shrink-0"
-          activeClassName="bg-indigo-900 text-white font-medium"
-        />
+        <div className="flex justify-center items-center flex-col mt-20 mb-10">
+          <p className="sm:hidden">
+            Page {currentPage} of {pageAndResult.page}
+          </p>
+          <ReactPaginate
+            pageCount={pageAndResult.page}
+            onPageChange={({ selected }) => setCurrentPage(selected + 1)}
+            previousLabel="< Prev"
+            nextLabel="Next >"
+            containerClassName="flex items-center gap-3 sm:text-xl"
+            pageClassName="hidden sm:block sm:py-1 sm:px-2 sm:rounded sm:w-fit sm:text-center sm:flex-shrink-0"
+            activeClassName="bg-indigo-900 text-white font-medium"
+          />
+        </div>
       )}
     </Container>
   );
