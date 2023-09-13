@@ -113,7 +113,7 @@ export default function Page({ params: { id } }: IProps) {
                 <p>{detailMovie?.original_title}</p>
               </div>
               <div className="my-2">
-                <p className="font-semibold">First Air Date :</p>
+                <p className="font-semibold">Rating :</p>
                 <p>{detailMovie?.vote_average.toFixed(1)}</p>
               </div>
               <div className="my-2">
